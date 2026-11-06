@@ -1,0 +1,40 @@
+# ============================================================================
+# AI Customer Prompt - configuration
+# ----------------------------------------------------------------------------
+# The prompt is assembled from TWO files:
+#
+#   template.txt  - the FIXED shell. Do NOT edit unless you know what you're
+#                   doing. Contains the <output_format> / TTS rules / messages
+#                   anchor that must never change, plus a {{SCENARIO}} marker.
+#
+#   scenario.txt  - the SWAPPABLE part. THIS is the file you edit to change
+#                   what the AI customer does (its goal, identity, behavior).
+#
+# The script inserts scenario.txt where {{SCENARIO}} sits in template.txt,
+# then pushes the full prompt.
+#
+# Workflow:
+#   1. Edit scenario.txt
+#   2. python update_prompt.py --dry-run     (preview, changes nothing)
+#   3. python update_prompt.py               (apply)
+# ============================================================================
+
+# --- Target resources (do not change unless the instance changes) ----------
+aws:
+  profile: rnd
+  region: ap-southeast-2
+  assistant_id: f27a2608-098f-4bd3-98c0-c2ced1931786
+  ai_prompt_id: 9fe27837-96a9-4cfb-baeb-af9e2b68e3a4
+  ai_agent_id: 3eddc019-b9ca-457d-9dbb-ce0348fac96d
+
+# --- Prompt assembly --------------------------------------------------------
+# template_file + scenario_file are combined via the {{SCENARIO}} marker.
+template_file: template.txt
+scenario_file: scenario.txt
+scenario_marker: "{{SCENARIO}}"
+
+# --- Publishing behavior ----------------------------------------------------
+# draft_only: true  -> just update $LATEST (fast; next call picks it up)
+# draft_only: false -> also publish an immutable version and repoint the agent
+publish:
+  draft_only: true
